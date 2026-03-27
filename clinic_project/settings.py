@@ -10,22 +10,27 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+import os
 from pathlib import Path
+
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+load_dotenv(BASE_DIR / '.env')
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-593#=2$%m7))8je&nkp!-4mku$bitt@q&sb9sizv@j59*rs76h'
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-593#=2$%m7))8je&nkp!-4mku$bitt@q&sb9sizv@j59*rs76h')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'True').lower() == 'true'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [host.strip() for host in os.getenv('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',') if host.strip()]
 
 
 # Application definition
@@ -75,12 +80,31 @@ WSGI_APPLICATION = 'clinic_project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
+db_engine = os.getenv('DB_ENGINE', 'django.db.backends.sqlite3')
+db_name = os.getenv('DB_NAME', str(BASE_DIR / 'db.sqlite3'))
+db_user = os.getenv('DB_USER', os.getenv('RDS_USERNAME', ''))
+db_password = os.getenv('DB_PASSWORD', os.getenv('RDS_PASSWORD', ''))
+db_host = os.getenv('DB_HOST', os.getenv('RDS_HOST', ''))
+db_port = os.getenv('DB_PORT', os.getenv('RDS_PORT', ''))
+
+if db_engine == 'django.db.backends.postgresql' and not os.getenv('DB_NAME'):
+    db_name = os.getenv('RDS_DB_NAME', db_name)
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': db_engine,
+        'NAME': db_name,
+        'USER': db_user,
+        'PASSWORD': db_password,
+        'HOST': db_host,
+        'PORT': db_port,
     }
 }
+
+if db_engine == 'django.db.backends.postgresql':
+    DATABASES['default']['OPTIONS'] = {
+        'sslmode': os.getenv('DB_SSLMODE', 'require')
+    }
 
 
 # Password validation
