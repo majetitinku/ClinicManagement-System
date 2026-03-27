@@ -21,16 +21,25 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / '.env')
 
 
+def getenv_str(key, default=''):
+    """Return a stripped env var value, falling back when the value is missing or empty."""
+    value = os.getenv(key)
+    if value is None:
+        return default
+    value = value.strip()
+    return value if value else default
+
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-593#=2$%m7))8je&nkp!-4mku$bitt@q&sb9sizv@j59*rs76h')
+SECRET_KEY = getenv_str('SECRET_KEY', 'django-insecure-593#=2$%m7))8je&nkp!-4mku$bitt@q&sb9sizv@j59*rs76h')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG', 'True').lower() == 'true'
+DEBUG = getenv_str('DEBUG', 'True').lower() == 'true'
 
-ALLOWED_HOSTS = [host.strip() for host in os.getenv('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',') if host.strip()]
+ALLOWED_HOSTS = [host.strip() for host in getenv_str('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',') if host.strip()]
 
 
 # Application definition
@@ -80,15 +89,21 @@ WSGI_APPLICATION = 'clinic_project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-db_engine = os.getenv('DB_ENGINE', 'django.db.backends.sqlite3')
-db_name = os.getenv('DB_NAME', str(BASE_DIR / 'db.sqlite3'))
-db_user = os.getenv('DB_USER', os.getenv('RDS_USERNAME', ''))
-db_password = os.getenv('DB_PASSWORD', os.getenv('RDS_PASSWORD', ''))
-db_host = os.getenv('DB_HOST', os.getenv('RDS_HOST', ''))
-db_port = os.getenv('DB_PORT', os.getenv('RDS_PORT', ''))
+db_engine = getenv_str('DB_ENGINE', 'django.db.backends.postgresql')
+db_name = getenv_str('DB_NAME', '')
+db_user = getenv_str('DB_USER', '')
+db_password = getenv_str('DB_PASSWORD', '')
+db_host = getenv_str('DB_HOST', '')
+db_port = getenv_str('DB_PORT', '')
 
-if db_engine == 'django.db.backends.postgresql' and not os.getenv('DB_NAME'):
-    db_name = os.getenv('RDS_DB_NAME', db_name)
+if db_engine != 'django.db.backends.postgresql':
+    raise ValueError('Only PostgreSQL (RDS) is supported. Set DB_ENGINE=django.db.backends.postgresql')
+
+if not db_name:
+    raise ValueError('Missing database name. Set DB_NAME in .env')
+
+if not db_user or not db_password or not db_host or not db_port:
+    raise ValueError('Missing RDS connection fields. Set DB_USER, DB_PASSWORD, DB_HOST, and DB_PORT in .env')
 
 DATABASES = {
     'default': {
@@ -101,10 +116,9 @@ DATABASES = {
     }
 }
 
-if db_engine == 'django.db.backends.postgresql':
-    DATABASES['default']['OPTIONS'] = {
-        'sslmode': os.getenv('DB_SSLMODE', 'require')
-    }
+DATABASES['default']['OPTIONS'] = {
+    'sslmode': getenv_str('DB_SSLMODE', 'require')
+}
 
 
 # Password validation
