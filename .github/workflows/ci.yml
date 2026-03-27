@@ -10,6 +10,18 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    env:
+      SECRET_KEY: ci-insecure-key-not-for-production
+      DEBUG: 'True'
+      ALLOWED_HOSTS: localhost
+      DB_ENGINE: django.db.backends.postgresql
+      DB_NAME: ${{ secrets.DB_NAME }}
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_PORT: ${{ secrets.DB_PORT }}
+      DB_SSLMODE: require
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
