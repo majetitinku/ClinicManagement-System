@@ -1,0 +1,28 @@
+{% extends 'base.html' %} {% block content %}
+<h3>Add Patient</h3>
+
+{% if error %}
+<div class="alert alert-danger">{{ error }}</div>
+{% endif %}
+
+<form method="POST" class="card p-3 shadow">
+  {% csrf_token %}
+
+  <div class="mb-3">
+    <label>Name</label>
+    <input type="text" name="name" class="form-control" />
+  </div>
+
+  <div class="mb-3">
+    <label>Age</label>
+    <input type="number" name="age" class="form-control" />
+  </div>
+
+  <div class="mb-3">
+    <label>Disease</label>
+    <input type="text" name="disease" class="form-control" />
+  </div>
+
+  <button class="btn btn-primary">Add Patient</button>
+</form>
+{% endblock %}

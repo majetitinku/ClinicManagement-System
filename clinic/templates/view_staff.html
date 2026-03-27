@@ -1,0 +1,17 @@
+{% extends 'base.html' %} {% block content %}
+<h3>Staff</h3>
+
+<table class="table table-bordered shadow">
+  <tr>
+    <th>Name</th>
+    <th>Department</th>
+  </tr>
+
+  {% for s in staff %}
+  <tr>
+    <td>{{ s.name }}</td>
+    <td>{{ s.department }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

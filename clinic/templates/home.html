@@ -1,0 +1,59 @@
+{% extends 'base.html' %} {% block content %}
+
+<!-- HERO SECTION -->
+<div class="text-center p-5 bg-white rounded shadow">
+  <h1 class="mb-3">🏥 Clinic Management System</h1>
+
+  <p class="lead text-muted">
+    A secure and cloud-enabled system for managing patients, staff, and
+    appointments efficiently using Django and DevOps practices.
+  </p>
+
+  <!-- IMAGE (ONLINE CDN) -->
+  <img
+    src="https://images.unsplash.com/photo-1588776814546-1ffcf47267a5"
+    class="img-fluid rounded my-4"
+    style="max-height: 300px; object-fit: cover"
+  />
+
+  <!-- ACTION BUTTONS -->
+  <div class="mt-3">
+    {% if user.is_authenticated %} {% if user.groups.all.0.name == 'STAFF' %}
+    <a href="/add-patient/" class="btn btn-primary m-2">Add Patient</a>
+    <a href="/view-patient/" class="btn btn-success m-2">View Patients</a>
+    <a href="/book-appointment/" class="btn btn-warning m-2"
+      >Book Appointment</a
+    >
+    {% endif %} {% if user.groups.all.0.name == 'PATIENT' %}
+    <a href="/view-appointment/" class="btn btn-warning m-2">My Appointments</a>
+    {% endif %} {% else %}
+    <a href="/login/" class="btn btn-dark m-2">Login</a>
+    {% endif %}
+  </div>
+</div>
+
+<!-- FEATURES SECTION -->
+<div class="row mt-5 text-center">
+  <div class="col-md-4">
+    <div class="card shadow p-3">
+      <h5>🧑‍⚕️ Staff Management</h5>
+      <p>Manage doctors and clinic staff efficiently.</p>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="card shadow p-3">
+      <h5>📋 Patient Records</h5>
+      <p>Store and manage patient information securely.</p>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="card shadow p-3">
+      <h5>📅 Appointments</h5>
+      <p>Schedule and manage appointments easily.</p>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

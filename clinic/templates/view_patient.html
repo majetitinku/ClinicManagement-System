@@ -1,0 +1,25 @@
+{% extends 'base.html' %} {% block content %}
+<h3>Patients</h3>
+
+<table class="table table-bordered table-striped shadow">
+  <tr>
+    <th>Name</th>
+    <th>Age</th>
+    <th>Disease</th>
+    <th>Action</th>
+  </tr>
+
+  {% for p in patients %}
+  <tr>
+    <td>{{ p.name }}</td>
+    <td>{{ p.age }}</td>
+    <td>{{ p.disease }}</td>
+    <td>
+      <a href="/delete-patient/{{ p.id }}/" class="btn btn-danger btn-sm"
+        >Delete</a
+      >
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

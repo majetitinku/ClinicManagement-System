@@ -1,0 +1,21 @@
+{% extends 'base.html' %} {% block content %}
+<h3>Appointments</h3>
+
+<table class="table table-striped shadow">
+  <tr>
+    <th>Patient</th>
+    <th>Staff</th>
+    <th>Date</th>
+    <th>Status</th>
+  </tr>
+
+  {% for a in appointments %}
+  <tr>
+    <td>{{ a.patient }}</td>
+    <td>{{ a.staff }}</td>
+    <td>{{ a.date }}</td>
+    <td>{{ a.status }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}
