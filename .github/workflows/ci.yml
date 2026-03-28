@@ -51,7 +51,7 @@ jobs:
         username: ec2-user
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
-          cd your-project-folder
+          cd var/www/ClinicManagement-System
           git pull origin main
           source venv/bin/activate
           pip install -r requirements.txt
